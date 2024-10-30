@@ -1,0 +1,113 @@
+Form Validation Test: Automate a scenario where the user fills out a registration or contact form.
+Validate required field errors, input constraints, and correct form submission.
+
+// pages/FormPage.java
+package pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class FormPage {
+    private WebDriver driver;
+
+    public FormPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    // Locators for form fields and error messages
+    private By nameField = By.id("name");                     // Replace with actual locator
+    private By emailField = By.id("email");                   // Replace with actual locator
+    private By phoneField = By.id("phone");                   // Replace with actual locator
+    private By submitButton = By.id("submit");                // Replace with actual locator
+    private By nameError = By.id("name_error");               // Replace with actual locator
+    private By emailError = By.id("email_error");             // Replace with actual locator
+    private By phoneError = By.id("phone_error");             // Replace with actual locator
+    private By successMessage = By.id("success_message");     // Replace with actual locator
+
+    // Method to fill out the form
+    public void fillForm(String name, String email, String phone) {
+        driver.findElement(nameField).clear();
+        driver.findElement(nameField).sendKeys(name);
+
+        driver.findElement(emailField).clear();
+        driver.findElement(emailField).sendKeys(email);
+
+        driver.findElement(phoneField).clear();
+        driver.findElement(phoneField).sendKeys(phone);
+    }
+
+    // Method to submit the form
+    public void submitForm() {
+        driver.findElement(submitButton).click();
+    }
+
+    // Validation methods for required field errors
+    public boolean isNameErrorDisplayed() {
+        return driver.findElement(nameError).isDisplayed();
+    }
+
+    public boolean isEmailErrorDisplayed() {
+        return driver.findElement(emailError).isDisplayed();
+    }
+
+    public boolean isPhoneErrorDisplayed() {
+        return driver.findElement(phoneError).isDisplayed();
+    }
+
+    // Validation for successful form submission
+    public boolean isSuccessMessageDisplayed() {
+        return driver.findElement(successMessage).isDisplayed();
+    }
+}
+
+
+// tests/FormValidationTest.java
+
+package tests;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import pages.FormPage;
+import utils.BaseTest;
+
+public class FormValidationTest extends BaseTest {
+
+    @Test
+    public void testRequiredFieldErrors() {
+        FormPage formPage = new FormPage(driver);
+
+        // Submit the form without filling in any fields
+        formPage.submitForm();
+
+        // Check if required field errors are displayed
+        Assert.assertTrue(formPage.isNameErrorDisplayed(), "Name field error not displayed");
+        Assert.assertTrue(formPage.isEmailErrorDisplayed(), "Email field error not displayed");
+        Assert.assertTrue(formPage.isPhoneErrorDisplayed(), "Phone field error not displayed");
+    }
+
+    @Test
+    public void testInputConstraints() {
+        FormPage formPage = new FormPage(driver);
+
+        // Attempt to fill the form with invalid data
+        formPage.fillForm("John", "invalidEmail", "123abc");
+        formPage.submitForm();
+
+        // Validate error messages for invalid input
+        Assert.assertTrue(formPage.isEmailErrorDisplayed(), "Email format error not displayed");
+        Assert.assertTrue(formPage.isPhoneErrorDisplayed(), "Phone format error not displayed");
+    }
+
+    @Test
+    public void testSuccessfulFormSubmission() {
+        FormPage formPage = new FormPage(driver);
+
+        // Fill the form with valid data
+        formPage.fillForm("John Doe", "john.doe@example.com", "1234567890");
+        formPage.submitForm();
+
+        // Validate that the success message is displayed
+        Assert.assertTrue(formPage.isSuccessMessageDisplayed(), "Success message not displayed");
+    }
+}
