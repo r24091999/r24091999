@@ -1,0 +1,65 @@
+/*UI Test: Automate a test to verify the presence of key UI elements on the homepage.
+Ensure elements like the search bar, navigation menu, and footer are correctly displayed and functional.
+*/
+
+// pages/HomePage.java
+package pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class HomePage {
+    private WebDriver driver;
+
+    public HomePage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    // Locators for key UI elements
+    private By searchBar = By.name("search");             // Replace with actual locator
+    private By navigationMenu = By.id("nav_menu");        // Replace with actual locator
+    private By footer = By.id("footer");                  // Replace with actual locator
+
+    // Method to check if the search bar is displayed
+    public boolean isSearchBarDisplayed() {
+        WebElement searchElement = driver.findElement(searchBar);
+        return searchElement.isDisplayed();
+    }
+
+    // Method to check if the navigation menu is displayed
+    public boolean isNavigationMenuDisplayed() {
+        WebElement menuElement = driver.findElement(navigationMenu);
+        return menuElement.isDisplayed();
+    }
+
+    // Method to check if the footer is displayed
+    public boolean isFooterDisplayed() {
+        WebElement footerElement = driver.findElement(footer);
+        return footerElement.isDisplayed();
+    }
+}
+// tests/UITest.java
+package tests;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import pages.HomePage;
+import utils.BaseTest;
+
+public class UITest extends BaseTest {
+
+    @Test
+    public void testUIElementsPresence() {
+        HomePage homePage = new HomePage(driver);
+
+        // Check if the search bar is displayed
+        Assert.assertTrue(homePage.isSearchBarDisplayed(), "Search bar is not displayed on the homepage.");
+
+        // Check if the navigation menu is displayed
+        Assert.assertTrue(homePage.isNavigationMenuDisplayed(), "Navigation menu is not displayed on the homepage.");
+
+        // Check if the footer is displayed
+        Assert.assertTrue(homePage.isFooterDisplayed(), "Footer is not displayed on the homepage.");
+    }
+}
